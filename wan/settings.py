@@ -96,6 +96,8 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+TEMPLATE_STRING_IF_INVALID = '##INVALID##'
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -132,11 +134,32 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'console':{
+                'level':'DEBUG',
+                'class':'logging.StreamHandler',
+                'formatter': 'simple',
+            },
+        'file':{
+                'level':'DEBUG',
+                'class':'logging.FileHandler',
+                'filename':os.path.join(PROJECT_DIR, 'develop.log'),
+                'mode':'a',
+                'encoding':'utf8',
+                'formatter': 'verbose',
+        },
     },
     'loggers': {
         'django.request': {
@@ -144,5 +167,17 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'dish.views': {
+            'handlers': ['console','file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'develop': {
+            'handlers': ['console','file'],
+            'level': 'INFO',
+            'propagate': True,
+        }
+ 
     }
 }
+

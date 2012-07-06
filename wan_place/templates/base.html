@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/css/bootstrap.css" />
+        <style type="text/css">
+            body {
+                padding-top:60px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-responsive.css" />
+	<title>wan_place</title>
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a href="#" class="brand">wan</a>
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="">
+                        	<a href="/place/">Home</a>
+                        </li>
+                        <li class="">
+                        	<a href="/place/">地点列表</a>
+                        </li>
+                        <li class="">
+                        	<a href="/place/add_place_detail/">新地点</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block content %}
+    {% endblock content %}
+    <!-- modal -->
+    <!-- javascript -->
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/static/js/create.js"></script>
+</body>
+</html>
