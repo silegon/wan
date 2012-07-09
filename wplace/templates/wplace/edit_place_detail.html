@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <form class="well" id="form_place_detail" action="" method="post">
+        {% csrf_token %}
+        {% if edit %}
+        <input type="hidden" value="{{wplace.id}}" name="hidden-wplace-id" />
+        <h1 style="margin:36px 0 27px;font-size=40px;font-weight=300;text-align:center;">修改地点详情:{{wplace.title}}</h1>
+        {% else %}
+        <h1 style="margin:36px 0 27px;font-size=40px;font-weight=300;text-align:center;">新增地点详情</h1>
+        {% endif %}
+        <label for="wplace-title">标题</label>
+        <div class="row-fluid">
+            <div class="span12">
+                <input type="text" class="span3" id="wplace-title" placeholder="标题" name="wplace-title" {% if edit %} value="{{ wplace.title }}" {% endif %} />
+            </div>
+        </div>
+        <label for="wplace-address">地址</label>
+        <div class="row-fluid">
+                <div class="span2">
+                    <select id="select-province" name="province"></select>
+                </div>
+                <div class="span2">
+                    <select id="select-city" name="city"></select>
+                </div>
+                <div class="span2">
+                    <select id="select-area" name="area"></select>
+                </div>
+                <div class="span5">
+                    <input type="text"id="wplace-address" placeholder="XX镇XX路向北42米" name="wplace-address" {% if edit %}value="{{ wplace.address }}"{% endif %} />
+                </div>
+        </div>
+        <label for="gps-position">GPS位置</label>
+        <div class="row-fluid">
+            <div class="span12">
+                <input type="text" class="span6" id="wplace-address" placeholder="经度,纬度,高度" name="wplace-position" {% if edit %}value="{{ wplace.position }}"{% endif %} />
+            </div>
+        </div>
+        <div class="row-fluid">
+                <div class="btn-group pull-right">
+                    <a class="btn" data-toggle="modal" href="#insert-picture">插入图片</a>
+                    <button class="btn">插入链接</button>
+                </div>
+        </div>
+        <label for="wplace-content">正文</label>
+        <div class="row-fluid">
+            <div class="span12">
+                <textarea id="wplace-content" style="width:99%;height:300px;" name="wplace-content"/>{% if edit %} {{wplace.content }} {% endif %}</textarea>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4">
+                <div class="btn-group">
+                    <button class="btn">预览</button>
+                    <button class="btn btn-primary" type="submit">保存</button>
+                </div>
+            </div>
+            <div class="span8">
+                <div class="btn-group pull-right">
+                    <button class="btn btn-danger">取消</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block extra-script %}
+<script type="text/javascript" src="/static/js/PCASClass.js" charset="gb2312"></script>
+<script language="javascript">
+    {% if edit %}
+    new PCAS("province","city","area","{{wplace.province}}","{{wplace.city}}","{{wplace.area}}");
+    {% else %}
+    new PCAS("province","city","area");
+    {% endif %}
+</script>
+{% endblock extra-script %}
+

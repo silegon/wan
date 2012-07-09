@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/static/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css" type="text/css">
+        <script type="text/javascript" src="/static/js/jquery.js"></script>
+        <script type="text/javascript" src="/static/plupload/js/plupload.full.js"></script>
+        <script type="text/javascript" src="/static/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js"></script>
+        <script type="text/javascript">
+            $(document).ajaxSend(function(event, xhr, settings) {
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                function sameOrigin(url) {
+                    // url could be relative or scheme relative or absolute
+                    var host = document.location.host; // host + port
+                    var protocol = document.location.protocol;
+                    var sr_origin = '//' + host;
+                    var origin = protocol + sr_origin;
+                    // Allow absolute or scheme relative URLs to same origin
+                    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                        // or any other URL that isn't scheme relative or absolute i.e relative.
+                        !(/^(\/\/|http:|https:).*/.test(url));
+                }
+                function safeMethod(method) {
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                }
+
+                if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            });
+        </script>
+
+        <script type="text/javascript">
+            $(function() {
+                $("#uploader").pluploadQueue({
+                    runtimes : 'html5,flash,html4',
+                    url : '{% url wan_place.views.upload_file %}',
+                    max_file_size : '10mb',
+                    chunk_size: '10kb',
+                    //resize : {width : 600, height : 450, quality : 90},
+                    unique_names : true,
+                    multipart: true,
+                    flash_swf_url : '/static/plupload/js/plupload.flash.swf',
+                    headers : {'X-Requested-With' : 'XMLHttpRequest', 'X-CSRFToken' : '{{csrf_token}}'},
+                });
+
+                $('form').submit(function(e) {
+                    var uploader = $('#uploader').pluploadQueue();
+
+                    // Validate number of uploaded files
+                    if (uploader.total.uploaded == 0) {
+                        // Files in queue upload them first
+                        if (uploader.files.length > 0) {
+                            // When all files are uploaded submit form
+                            uploader.bind('UploadProgress', function() {
+                                if (uploader.total.uploaded == uploader.files.length)
+                                    $('form').submit();
+                            });
+
+                            uploader.start();
+                        } else {
+                            alert('You must at least upload one file.');
+                        }
+
+                        e.preventDefault();
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <form enctype="multipart/form-data" action="{% url wan_place.views.upload_file %}" method="post">
+            {% csrf_token %}
+
+            <div id="uploader">
+                {{form.file.errors}}{{form.file}}
+                <input type="submit" value="Upload" />
+            </div>
+        </form>
+    </body>
+</html>
+
